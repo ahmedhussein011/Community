@@ -1,56 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Random Question Generator</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Community Written 2025</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 40px;
-      background: #f0f0f0;
-    }
-    #question {
-      font-size: 20px;
-      margin: 40px auto;
-      max-width: 700px;
+      font-family: 'Poppins', sans-serif;
+      background: #f4f6f8;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
       padding: 20px;
+    }
+
+    h1 {
+      color: goldenrod;
+      font-size: 2.5em;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    #question-box {
       background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 700px;
+      width: 100%;
+      margin-bottom: 25px;
     }
+
+    #question {
+      font-size: 1.2em;
+      line-height: 1.6;
+    }
+
     button {
-      padding: 10px 20px;
-      font-size: 18px;
-      cursor: pointer;
-      border: none;
-      margin: 10px;
-      border-radius: 8px;
-      color: white;
-    }
-    #startBtn {
       background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      margin: 10px 15px;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
-    #startBtn:hover {
+
+    button:hover {
       background-color: #0056b3;
     }
-    #resetBtn {
-      background-color: #dc3545;
-    }
-    #resetBtn:hover {
-      background-color: #a71d2a;
+
+    .signature {
+      margin-top: 25px;
+      font-size: 0.95em;
+      color: #666;
+      font-style: italic;
     }
   </style>
 </head>
 <body>
 
-  <h1>Random Question Generator</h1>
-  <div id="question">Click Start to get a question</div>
-  <button id="startBtn" onclick="showNextQuestion()">Start</button>
-  <button id="resetBtn" onclick="resetQuestions()">Reset</button>
+  <h1>Community Written 2025</h1>
+
+  <div id="question-box">
+    <p id="question">Are you ready? Click Start to begin!</p>
+  </div>
+
+  <div>
+    <button onclick="showNextQuestion()">Start</button>
+    <button onclick="resetQuestions()">Reset</button>
+  </div>
+
+  <div class="signature">Developed by Ahmed Hussein</div>
 
   <script>
-    const allQuestions = [
+    const questions = [
       "The Spectrum of Health",
       "DETERMINANTS OF HEALTH",
       "Factors affecting the occurrence of a disease",
@@ -175,33 +208,29 @@
       "Components of Pre employment Examination"
     ];
 
-    let shuffledQuestions = [];
+    let shuffled = [];
     let currentIndex = 0;
 
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-    }
-
-    function resetQuestions() {
-      shuffledQuestions = [...allQuestions];
-      shuffle(shuffledQuestions);
+    function shuffleArray() {
+      shuffled = [...questions].sort(() => Math.random() - 0.5);
       currentIndex = 0;
-      document.getElementById("question").textContent = "Questions reset. Click Start to begin!";
     }
 
     function showNextQuestion() {
-      if (currentIndex >= shuffledQuestions.length) {
-        resetQuestions();
+      if (shuffled.length === 0 || currentIndex >= shuffled.length) {
+        shuffleArray();
       }
-      document.getElementById("question").textContent = shuffledQuestions[currentIndex];
+      document.getElementById("question").textContent = shuffled[currentIndex];
       currentIndex++;
     }
 
-    resetQuestions();
-  </script>
+    function resetQuestions() {
+      shuffleArray();
+      document.getElementById("question").textContent = "Are you ready? Click Start to begin!";
+    }
 
+    // Initial shuffle
+    shuffleArray();
+  </script>
 </body>
 </html>
