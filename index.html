@@ -70,7 +70,14 @@
       background: linear-gradient(135deg, #28a745, #218838);
     }
 
-    button:hover {
+    button:disabled {
+      background: #cccccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    button:hover:not(:disabled) {
       transform: scale(1.05);
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
     }
@@ -128,6 +135,20 @@
         flex: 1;
       }
     }
+
+    /* Notification style */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #4CAF50;
+      color: white;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      z-index: 1000;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -138,10 +159,13 @@
   </div>
   <div class="question-box" id="questionBox">Are you ready? Click Start to begin!</div>
   <div class="button-group">
-    <button class="start" onclick="showNextQuestion()">Start</button>
+    <button class="start" id="startButton" onclick="showNextQuestion()">Start</button>
     <button onclick="resetQuestions()">Reset</button>
   </div>
   <div class="signature">Developed by Ahmed Hussein</div>
+
+  <!-- Notification element -->
+  <div id="notification" class="notification">All Questions Done ✅️</div>
 
   <script>
     const questions = `The Spectrum of Health
@@ -283,6 +307,8 @@ Elimination of lymphatic ftlariasis in Egypt`.split('\n');
 
     let shuffled = [];
     let index = 0;
+    const startButton = document.getElementById('startButton');
+    const notification = document.getElementById('notification');
 
     // Save progress to localStorage
     function saveProgress() {
@@ -300,6 +326,9 @@ Elimination of lymphatic ftlariasis in Egypt`.split('\n');
         index = parseInt(savedIndex);
         document.getElementById("questionBox").textContent = 
           index > 0 ? shuffled[index - 1] : "Are you ready? Click Start to begin!";
+        if (index >= shuffled.length && shuffled.length > 0) {
+          showCompletion();
+        }
       } else {
         shuffleQuestions();
       }
@@ -308,6 +337,21 @@ Elimination of lymphatic ftlariasis in Egypt`.split('\n');
     function shuffleQuestions() {
       shuffled = [...questions].sort(() => Math.random() - 0.5);
       index = 0;
+      startButton.disabled = false;
+    }
+
+    function showCompletion() {
+      // Show notification
+      notification.style.display = 'block';
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 3000);
+      
+      // Disable start button
+      startButton.disabled = true;
+      
+      // Show message in question box
+      document.getElementById("questionBox").textContent = "All Questions Done ✅️, Click Reset to start again";
     }
 
     function showNextQuestion() {
@@ -317,10 +361,8 @@ Elimination of lymphatic ftlariasis in Egypt`.split('\n');
         document.getElementById("questionBox").textContent = shuffled[index];
         index++;
       } else {
-        index = 0;
-        shuffleQuestions();
-        document.getElementById("questionBox").textContent = shuffled[index];
-        index++;
+        showCompletion();
+        return;
       }
       updateProgress();
       saveProgress();
